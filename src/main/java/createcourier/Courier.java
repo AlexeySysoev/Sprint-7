@@ -1,5 +1,4 @@
 package createcourier;
-
 public class Courier {
     private String login;
     private String password;
@@ -9,7 +8,5 @@ public class Courier {
         this.password = password;
         this.firstName = firstName;
     }
-    public Courier(){
-
-    }
+    public Courier(){}
 }
