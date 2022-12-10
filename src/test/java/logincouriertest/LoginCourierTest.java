@@ -1,14 +1,11 @@
 package logincouriertest;
-
+import createcourier.*;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.Before;
 import org.junit.Test;
-
-import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
-
 public class LoginCourierTest {
     @Before
     public void setUp() {
@@ -18,51 +15,67 @@ public class LoginCourierTest {
     //Курьер может авторизоваться /api/v1/courier/login
     //получаем id при успешной авторизации
     public void checkLoginCourierWithRequiredFieldsPassed() {
-        String json = "{\"login\": \"igor\", \"password\": \"1234\"}";
-        Response response = given().log().all()
-                .header("Content-type", "application/json")
-                .body(json)
-                .when()
-                .post("/api/v1/courier/login");
+        RandomDataForCourier randomData  = new RandomDataForCourier(); //экземпляр класса для создания данных
+        Courier courier = //создаем курьера с рандомными данными
+                new CourierWithoutFirstName(randomData.generateLogin(),randomData.generatePassword());
+        CourierRequest courierRequest = new CourierRequest(); //экземпляр класс для работы с АПИ курьера
+        //Отправляем Пост на создание курьера
+        courierRequest.createCourier(courier);
+        //Логин курьера и получение тела ответа
+        Response response = courierRequest.loginCourier(courier);
+        //Проверка тела и статускода
         response.then().assertThat().body("id", notNullValue())
                 .and().statusCode(200);
+        //удаляем курьера из базы данных
+        courierRequest.deleteCourier(courierRequest.getCourierId(courier));
     }
     @Test
     //Попытка логина без поля login
     //Проверяем тело ответа и статускод 400
     public void checkLoginCourierWithoutLoginFieldReturnBadRequest() {
-        String json = "{\"password\": \"1234\"}";
-        Response response = given().log().all()
-                .header("Content-type", "application/json")
-                .body(json)
-                .when()
-                .post("/api/v1/courier/login");
+        RandomDataForCourier randomData  = new RandomDataForCourier(); //экземпляр класса для создания данных
+        Courier courier = //создаем курьера с рандомными данными
+                new CourierWithOnlyPassword(randomData.generatePassword());
+        CourierRequest courierRequest = new CourierRequest(); //экземпляр класс для работы с АПИ курьера
+        //Отправляем Пост на создание курьера
+        courierRequest.createCourier(courier);
+        //Логин курьера и получение тела ответа
+        Response response = courierRequest.loginCourier(courier);
+        //Проверка тела и статускода
         response.then().assertThat().body("message",equalTo("Недостаточно данных для входа"))
                 .and().statusCode(400);
     }
     @Test
-    //Попытка логина без поля login
+    //Попытка логина без поля password
     //Проверяем тело ответа и статускод 400
     public void checkLoginCourierWithoutPasswordFieldReturnBadRequest() {
-        String json = "{\"login\": \"igor\"}";
-        Response response = given().log().all()
-                .header("Content-type", "application/json")
-                .body(json)
-                .when()
-                .post("/api/v1/courier/login");
+        RandomDataForCourier randomData  = new RandomDataForCourier(); //экземпляр класса для создания данных
+        String login = randomData.generateLogin();
+        Courier courier = //создаем курьера с рандомными данными
+                new CourierWithoutFirstName(login,randomData.generatePassword());
+        CourierRequest courierRequest = new CourierRequest(); //экземпляр класс для работы с АПИ курьера
+        //Отправляем Пост на создание курьера
+        courierRequest.createCourier(courier);
+        //Делаем курьера без поля password
+        Courier courierOnlyLogin = new CourierWithOnlyLogin(login);
+        //Логин курьера и получение тела ответа
+        Response response = courierRequest.loginCourier(courierOnlyLogin);
+        //Проверка тела и статускода
         response.then().assertThat().body("message",equalTo("Недостаточно данных для входа"))
                 .and().statusCode(400);
+        //Сервер падает на 504, составить репорт
     }
     @Test
     //Попытка авторизации с неверным(несуществующим) login
     //Проверяем тело ответа и статускод 404
     public void checkLoginCourierWithInvalidLoginFieldReturnNotFound() {
-        String json = "{\"login\": \"igortata\", \"password\": \"1234\"}";
-        Response response = given().log().all()
-                .header("Content-type", "application/json")
-                .body(json)
-                .when()
-                .post("/api/v1/courier/login");
+        RandomDataForCourier randomData  = new RandomDataForCourier(); //экземпляр класса для создания данных
+        Courier courier = //создаем курьера с рандомными данными
+                new CourierWithoutFirstName(randomData.generateLogin(),randomData.generatePassword());
+        CourierRequest courierRequest = new CourierRequest(); //экземпляр класс для работы с АПИ курьера
+        //Пропускаем шаг создания курьера в БД и отправляем запрос на логин
+        Response response = courierRequest.loginCourier(courier);
+        //Проверка тела ответа и статускода
         response.then().assertThat().body("message",equalTo("Учетная запись не найдена"))
                 .and().statusCode(404);
     }
@@ -70,12 +83,17 @@ public class LoginCourierTest {
     //Попытка авторизации с неверным(несуществующим) password
     //Проверяем тело ответа и статускод 404
     public void checkLoginCourierWithInvalidPasswordFieldReturnNotFound() {
-        String json = "{\"login\": \"igor\", \"password\": \"1212\"}";
-        Response response = given().log().all()
-                .header("Content-type", "application/json")
-                .body(json)
-                .when()
-                .post("/api/v1/courier/login");
+        RandomDataForCourier randomData  = new RandomDataForCourier(); //экземпляр класса для создания данных
+        String login = randomData.generateLogin();
+        Courier courier = //создаем курьера с рандомными данными
+                new CourierWithoutFirstName(login,randomData.generatePassword());
+        CourierRequest courierRequest = new CourierRequest(); //экземпляр класс для работы с АПИ курьера
+        //Отправляем Пост на создание курьера
+        courierRequest.createCourier(courier);
+        //Замена пароля на несуществующий в системе
+        Courier courierWithWrongPassword = new CourierWithoutFirstName(login,randomData.generatePassword());
+        //Попытка логина курьера и получение тела ответа
+        Response response = courierRequest.loginCourier(courierWithWrongPassword);
         response.then().assertThat().body("message",equalTo("Учетная запись не найдена"))
                 .and().statusCode(404);
     }

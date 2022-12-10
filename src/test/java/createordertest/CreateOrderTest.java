@@ -23,7 +23,7 @@ public static Object[][] params(){
 }
     @Test
     //Проверяем создание заказа
-    public void checkCreateOrderWithBlackColorSuccess() {
+    public void checkCreateOrderColorField() {
         CreateOrderData orderData = new CreateOrderData("Mike",
                                                     "Jonson",
                                                     "Sovetskya, 32, kv.34",
@@ -36,5 +36,9 @@ public static Object[][] params(){
         Order sendOrder = new Order(); //экземпляр класса для работы с АПИ
         //Отправляем заказ и проверяем наличие значения в "track" и статус код
         sendOrder.orderRequest(orderData).then().assertThat().body("track",notNullValue()).and().statusCode(201);
+        //Получаем трек номер заказа
+        int track  = sendOrder.getTrackNumberOfOrder(orderData);
+        //Отмена заказа
+        sendOrder.cancelOrder(track);
     }
 }
