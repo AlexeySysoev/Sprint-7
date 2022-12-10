@@ -12,8 +12,8 @@ public class CourierRequest {
                         .when()
                         .post("/api/v1/courier");
     }
-    //делаем логин курьера и получаем id в ответе
-    public int loginCourier(Courier courier){
+    //получить id курьера
+    public int getCourierId(Courier courier){
         int id;
         return id = given().log().all()
                 .header("Content-type", "application/json")
@@ -23,6 +23,14 @@ public class CourierRequest {
                 .then()
                 .extract()
                 .path("id");
+    }
+    //логин курьера в системе
+    public Response loginCourier(Courier courier){
+        return   given().log().all()
+                .header("Content-type", "application/json")
+                .body(courier)
+                .when()
+                .post("/api/v1/courier/login");
     }
     //удаление курьера из БД
     public void deleteCourier(int id){

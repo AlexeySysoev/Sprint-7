@@ -9,8 +9,8 @@ public class RandomDataForCourier {
     private String password;
     private String firstName;
     public String generateLogin(){
-        //формируем логин log + 2 цифры - пример log77
-        return "log" + new Random().nextInt(100);
+        //формируем логин log + 3 цифры - пример: log77
+        return "log" + 100 + new Random().nextInt(100);
     }
     public String generatePassword(){
         int randomPass = 1000 + new Random().nextInt(10000-1000);//число от 1000 до 9999 включительно
@@ -18,5 +18,8 @@ public class RandomDataForCourier {
     }
     public String generateFirstName(){
         return RandomStringUtils.randomAlphabetic(6); //возвращаем 6 случайных букв
+    }
+    public int generateCourierId(){
+        return 10000 + new Random().nextInt(100000-10000);
     }
 }

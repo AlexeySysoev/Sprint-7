@@ -1,7 +1,5 @@
 package createcouriertest;
-import createcourier.Courier;
-import createcourier.CourierRequest;
-import createcourier.RandomDataForCourier;
+import createcourier.*;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.Before;
@@ -18,16 +16,15 @@ public class CreateCourierTest {
     public void checkCreateCourierFirstTimeWithWrightData(){
         RandomDataForCourier randomData  = new RandomDataForCourier(); //экземпляр класса для создания данных
         Courier courier = //создаем курьера с рандомными данными
-                new Courier(randomData.generateLogin(),randomData.generatePassword(),randomData.generateFirstName());
+                new CourierAllFields(randomData.generateLogin(),randomData.generatePassword(),randomData.generateFirstName());
         CourierRequest courierRequest = new CourierRequest(); //экземпляр класс для работы с АПИ курьера
         //Отправляем Пост на создание курьера
         Response response = courierRequest.createCourier(courier);
         //Проверяем тело ответа и статускод
         response.then().assertThat().body("ok", equalTo(true)).and().statusCode(201);
-        //делаем логин в системе и получаем id
-        int id = courierRequest.loginCourier(courier);
+        //получаем id курьера
         //удаляем курьера из базы данных
-        courierRequest.deleteCourier(id);
+        courierRequest.deleteCourier(courierRequest.getCourierId(courier));
     }
     @Test
     //Проверка невозможности создать одинаковых курьеров
@@ -36,7 +33,7 @@ public class CreateCourierTest {
     public void checkDoubleCreateCourierReturnConflict(){
         RandomDataForCourier randomData  = new RandomDataForCourier(); //экземпляр класса для создания данных
         Courier courier = //создаем курьера с рандомными данными
-                new Courier(randomData.generateLogin(),randomData.generatePassword(),randomData.generateFirstName());
+                new CourierAllFields(randomData.generateLogin(),randomData.generatePassword(),randomData.generateFirstName());
         CourierRequest courierRequest = new CourierRequest(); //экземпляр класс для работы с АПИ курьера
         //Отправляем Пост на создание курьера в первый раз
         courierRequest.createCourier(courier);
@@ -54,7 +51,7 @@ public class CreateCourierTest {
     public void checkCreateCourierWithoutLoginFailed(){
         RandomDataForCourier randomData  = new RandomDataForCourier(); //экземпляр класса для создания данных
         Courier courier = //создаем курьера с рандомными данными
-                new Courier("",randomData.generatePassword(),randomData.generateFirstName());
+                new CourierWithoutLogin(randomData.generatePassword(),randomData.generateFirstName());
         CourierRequest courierRequest = new CourierRequest();//экземпляр класс для работы с АПИ курьера
         Response response = courierRequest.createCourier(courier);//отправляем запрос
         //проверяем тело ответа и статускод
@@ -67,7 +64,7 @@ public class CreateCourierTest {
     public void checkCreateCourierWithoutPasswordFailed(){
             RandomDataForCourier randomData  = new RandomDataForCourier(); //экземпляр класса для создания данных
             Courier courier = //создаем курьера с рандомными данными
-                    new Courier(randomData.generateLogin(),"",randomData.generateFirstName());
+                    new CourierWithoutPassword(randomData.generateLogin(),randomData.generateFirstName());
             CourierRequest courierRequest = new CourierRequest();//экземпляр класс для работы с АПИ курьера
             Response response = courierRequest.createCourier(courier);//отправляем запрос
             //проверяем тело ответа и статускод
@@ -81,11 +78,25 @@ public class CreateCourierTest {
     public void checkCreateCourierWithoutLoginAndPasswordFailed(){
         RandomDataForCourier randomData  = new RandomDataForCourier(); //экземпляр класса для создания данных
         Courier courier = //создаем курьера с рандомными данными
-                new Courier("","",randomData.generateFirstName());
+                new CourierWithOnlyFirstName(randomData.generateFirstName());
         CourierRequest courierRequest = new CourierRequest();//экземпляр класс для работы с АПИ курьера
         Response response = courierRequest.createCourier(courier);//отправляем запрос
         //проверяем тело ответа и статускод
         response.then().assertThat()
                 .body("message", equalTo("Недостаточно данных для создания учетной записи")).and().statusCode(400);
     }
-  }
+
+    @Test
+    //Попытка создать курьера без поля firstName
+    //Проверяем тело и код 400
+    public void checkCreateCourierWithoutFirstNameFailed(){
+        RandomDataForCourier randomData  = new RandomDataForCourier(); //экземпляр класса для создания данных
+        Courier courier = //создаем курьера с рандомными данными
+                new CourierWithoutFirstName(randomData.generateLogin(),randomData.generatePassword());
+        CourierRequest courierRequest = new CourierRequest();//экземпляр класс для работы с АПИ курьера
+        Response response = courierRequest.createCourier(courier);//отправляем запрос
+        //проверяем тело ответа и статускод
+        response.then().assertThat()
+                .body("message", equalTo("Недостаточно данных для создания учетной записи")).and().statusCode(400);
+    }
+}
