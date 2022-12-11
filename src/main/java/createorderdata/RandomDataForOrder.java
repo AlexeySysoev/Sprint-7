@@ -1,6 +1,5 @@
 package createorderdata;
 import org.apache.commons.lang3.RandomStringUtils;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
@@ -16,7 +15,7 @@ public class RandomDataForOrder {
         return "Черкизовская";
     }
     public String generatePhoneNumber(){
-        return "+7" + RandomStringUtils.randomNumeric(10);
+        return "+79" + RandomStringUtils.randomNumeric(9);
     }
     public int generateRentTime(){
         return new Random().nextInt(30);
