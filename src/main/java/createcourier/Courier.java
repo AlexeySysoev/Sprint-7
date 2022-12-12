@@ -1,3 +1,3 @@
 package createcourier;
-public class Courier {
+public interface Courier {
 }

@@ -1,6 +1,6 @@
 package createcourier;
 
-public class CourierV2 extends Courier {
+public class CourierV2 implements Courier {
     private String login;
     private String firstName;
     public CourierV2(String login, String firstName){

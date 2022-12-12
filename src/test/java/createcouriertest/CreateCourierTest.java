@@ -38,6 +38,8 @@ public class CreateCourierTest {
                 .assertThat().body("message", equalTo("Этот логин уже используется. Попробуйте другой."))
                 .and()
                 .statusCode(409);
+        //Удаление курьера в случае его создания
+        courierRequest.deleteWrongCourier(response,courier);
     }
     @Test
     //Попытка создать курьера без поля login
@@ -53,6 +55,8 @@ public class CreateCourierTest {
         //проверяем тело ответа и статускод
         response.then().assertThat()
                 .body("message", equalTo("Недостаточно данных для создания учетной записи")).and().statusCode(400);
+        //Удаление курьера в случае его создания
+        courierRequest.deleteWrongCourier(response,courier);
     }
     @Test
     @DisplayName("Попытка создать курьера без поля password")
@@ -66,6 +70,8 @@ public class CreateCourierTest {
         //проверяем тело ответа и статускод
         response.then().assertThat()
                 .body("message", equalTo("Недостаточно данных для создания учетной записи")).and().statusCode(400);
+        //Удаление курьера в случае его создания
+        courierRequest.deleteWrongCourier(response,courier);
     }
     @Test
     @DisplayName("Попытка создать курьера без полей login,password")
@@ -79,5 +85,7 @@ public class CreateCourierTest {
         //проверяем тело ответа и статускод
         response.then().assertThat()
                 .body("message", equalTo("Недостаточно данных для создания учетной записи")).and().statusCode(400);
+        //Удаление курьера в случае его создания
+        courierRequest.deleteWrongCourier(response,courier);
     }
 }

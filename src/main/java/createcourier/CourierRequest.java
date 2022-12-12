@@ -43,4 +43,10 @@ public class CourierRequest {
                 .when()
                 .delete(newCourierApi+ id);
     }
+    public void deleteWrongCourier(Response response, Courier courier){
+        CourierRequest courierRequest = new CourierRequest();
+        if(response.then().extract().statusCode() ==200 || response.then().extract().statusCode()==201){
+            courierRequest.deleteCourier(courierRequest.getCourierId(courier));
+        }
+    }
 }

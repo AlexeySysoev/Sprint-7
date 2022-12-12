@@ -37,14 +37,18 @@ public class LoginCourierTest {
     @Description("Проверяем тело ответа и статускод 400")
     public void checkLoginCourierWithoutLoginFieldReturnBadRequest() {
         RandomDataForCourier randomData  = new RandomDataForCourier(); //экземпляр класса для создания данных
+        String pass = randomData.generatePassword();
         Courier courier = //создаем курьера с рандомными данными
-                new CourierV3(randomData.generatePassword());
+                new CourierV1(randomData.generateLogin(), pass);
         CourierRequest courierRequest = new CourierRequest(); //экземпляр класс для работы с АПИ курьера
         courierRequest.createCourier(courier); //Отправляем Пост на создание курьера
-        Response response = courierRequest.loginCourier(courier); //Логин курьера и получение тела ответа
+        Courier courierForLogin = new CourierV3(pass);//создаем курьера без поля логин, но с корректным паролем
+        Response response = courierRequest.loginCourier(courierForLogin); //Логин курьера и получение тела ответа
         //Проверка тела и статускода
         response.then().assertThat().body("message",equalTo("Недостаточно данных для входа"))
                 .and().statusCode(400);
+        //удаляем курьера из базы данных
+        courierRequest.deleteCourier(courierRequest.getCourierId(courier));
     }
     @Test
     @DisplayName("Логин курьера без поля password")
@@ -65,6 +69,8 @@ public class LoginCourierTest {
         //Проверка тела и статускода
         response.then().assertThat().body("message",equalTo("Недостаточно данных для входа"))
                 .and().statusCode(400);
+        //удаляем курьера из базы данных
+        courierRequest.deleteCourier(courierRequest.getCourierId(courier));
     }
     @Test
     @DisplayName("Логин курьера  неверным(несуществующим) login")
@@ -79,6 +85,8 @@ public class LoginCourierTest {
         //Проверка тела ответа и статускода
         response.then().assertThat().body("message",equalTo("Учетная запись не найдена"))
                 .and().statusCode(404);
+        //Удаление курьера в случае его создания
+        courierRequest.deleteWrongCourier(response,courier);
     }
     @Test
     @DisplayName("Логин курьера  неверным(несуществующим) password")
@@ -97,5 +105,7 @@ public class LoginCourierTest {
         Response response = courierRequest.loginCourier(courierWithWrongPassword);
         response.then().assertThat().body("message",equalTo("Учетная запись не найдена"))
                 .and().statusCode(404);
+        //удаляем курьера из базы данных
+        courierRequest.deleteCourier(courierRequest.getCourierId(courier));
     }
 }
