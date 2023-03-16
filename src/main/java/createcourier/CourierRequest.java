@@ -1,4 +1,5 @@
 package createcourier;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import static io.restassured.RestAssured.given;
 public class CourierRequest {
@@ -48,5 +49,13 @@ public class CourierRequest {
         if(response.then().extract().statusCode() ==200 || response.then().extract().statusCode()==201){
             courierRequest.deleteCourier(courierRequest.getCourierId(courier));
         }
+    }
+    public Response deleteCourier(Response response) {
+            String id = "/" + response.then().extract().path("id").toString();
+            return given().log().all()
+                    .contentType(ContentType.JSON)
+                    .baseUri(uri)
+                    .when()
+                    .delete(newCourierApi + id);
     }
 }
