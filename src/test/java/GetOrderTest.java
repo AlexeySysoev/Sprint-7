@@ -1,4 +1,3 @@
-package getordertest;
 import createcourier.*;
 import createorderdata.CreateOrderData;
 import createorderdata.Order;
@@ -7,12 +6,14 @@ import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import java.util.Arrays;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 public class GetOrderTest {
+     private Order order = new Order();
     @Before
     public void setUp() {
         RestAssured.baseURI = "http://qa-scooter.praktikum-services.ru";
@@ -97,5 +98,14 @@ public class GetOrderTest {
         int id = randomCourierId.generateCourierId()+1000000; //создание случайного id
         Response response = order.getOrderWithId(id); //отправляем запрос на список заказов курьера с несуществующим id
         response.then().assertThat().body("message",equalTo("Курьер с идентификатором "+ id +" не найден") ).and().statusCode(404);
+    }
+    @Test
+    @DisplayName("Получение заказов без курьера")
+    @Description("Осваиваем работу в вложенными объектами")
+    public void checkResponseBobyToNestedIssuesGetOrdersWithoutCourier() {
+        Response response = order.getOrderWithoutCourier();
+
+        int track =  response.then().extract().path("pageInfo.total");
+        System.out.println("track from nested obj ==>> " + track);
     }
 }

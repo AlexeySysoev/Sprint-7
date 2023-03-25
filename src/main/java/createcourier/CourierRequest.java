@@ -37,18 +37,28 @@ public class CourierRequest {
                 .post(loginCourier);
     }
     //удаление курьера из БД
-    public void deleteCourier(int id){
-        given().log().all()
-                .header("Content-type", "application/json")
+    public Response deleteCourier(int id){
+        return given().log().all()
+                .contentType(ContentType.JSON)
                 .baseUri(uri)
                 .when()
-                .delete(newCourierApi+ id);
+                .delete(newCourierApi + "/" + id);
+    }
+    public Response deleteCourier(String id){
+        return given().log().all()
+                .contentType(ContentType.JSON)
+                .baseUri(uri)
+                .when()
+                .delete(newCourierApi + "/" + id);
     }
     public void deleteWrongCourier(Response response, Courier courier){
         CourierRequest courierRequest = new CourierRequest();
         if(response.then().extract().statusCode() ==200 || response.then().extract().statusCode()==201){
             courierRequest.deleteCourier(courierRequest.getCourierId(courier));
         }
+    }
+    public int extractCourierId(Response response) {
+           return (int) response.then().extract().path("id");
     }
     public Response deleteCourier(Response response) {
             String id = "/" + response.then().extract().path("id").toString();

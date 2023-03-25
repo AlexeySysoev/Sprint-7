@@ -1,4 +1,3 @@
-package createordertest;
 import createorderdata.CreateOrderData;
 import createorderdata.Order;
 import createorderdata.RandomDataForOrder;

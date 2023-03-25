@@ -1,4 +1,3 @@
-package logincouriertest;
 import createcourier.*;
 import io.qameta.allure.Issue;
 import io.restassured.RestAssured;
