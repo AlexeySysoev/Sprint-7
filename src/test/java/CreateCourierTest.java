@@ -8,7 +8,7 @@ public class CreateCourierTest {
     @Test
     @DisplayName("Корректное создание курьера")
     @Description("Проверяем тело ответа и статускод 201")
-    public void checkCreateCourierWithWrightData() {
+    public void checkCreateCourierWithWrightData() throws InterruptedException {
         RandomDataForCourier randomData = new RandomDataForCourier(); //экземпляр класса для создания данных
         Courier courier = //создаем курьера с рандомными данными
                 new CourierV1(randomData.generateLogin(), randomData.generatePassword(), randomData.generateFirstName());
@@ -23,7 +23,7 @@ public class CreateCourierTest {
     @Test
     @DisplayName("Попытка создания уже существующего курьера")
     @Description("Проверяем тело ответа на наличие \"Этот логин уже используется. Попробуйте другой.\" и статус код 409")
-    public void checkDoubleCreateCourierReturnConflict() {
+    public void checkDoubleCreateCourierReturnConflict() throws InterruptedException {
         RandomDataForCourier randomData = new RandomDataForCourier(); //экземпляр класса для создания данных
         Courier courier = //создаем курьера с рандомными данными
                 new CourierV1(randomData.generateLogin(), randomData.generatePassword(), randomData.generateFirstName());
@@ -45,7 +45,7 @@ public class CreateCourierTest {
     //Проверяем тело и код 400
     @DisplayName("Попытка создать курьера без поля login")
     @Description("Проверяем тело ответа на наличие \"Недостаточно данных для создания учетной записи\" и статус код 400")
-    public void checkCreateCourierWithoutLoginFailed() {
+    public void checkCreateCourierWithoutLoginFailed() throws InterruptedException {
         RandomDataForCourier randomData = new RandomDataForCourier(); //экземпляр класса для создания данных
         Courier courier = //создаем курьера с рандомными данными
                 new CourierV3(randomData.generatePassword(), randomData.generateFirstName());
@@ -60,7 +60,7 @@ public class CreateCourierTest {
     @Test
     @DisplayName("Попытка создать курьера без поля password")
     @Description("Проверяем тело ответа на наличие \"Недостаточно данных для создания учетной записи\" и статус код 400")
-    public void checkCreateCourierWithoutPasswordFailed() {
+    public void checkCreateCourierWithoutPasswordFailed() throws InterruptedException {
         RandomDataForCourier randomData = new RandomDataForCourier(); //экземпляр класса для создания данных
         Courier courier = //создаем курьера с рандомными данными
                 new CourierV2(randomData.generateLogin(), randomData.generateFirstName());
@@ -75,7 +75,7 @@ public class CreateCourierTest {
     @Test
     @DisplayName("Попытка создать курьера без полей login,password")
     @Description("Проверяем тело ответа на наличие \"Недостаточно данных для создания учетной записи\" и статус код 400")
-    public void checkCreateCourierWithoutLoginAndPasswordFailed() {
+    public void checkCreateCourierWithoutLoginAndPasswordFailed() throws InterruptedException {
         RandomDataForCourier randomData = new RandomDataForCourier(); //экземпляр класса для создания данных
         Courier courier = //создаем курьера с рандомными данными
                 new CourierV2(randomData.generateFirstName());

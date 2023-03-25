@@ -21,7 +21,7 @@ public class GetOrderTest {
     @Test
     @DisplayName("Получение активных заказов курьера")
     @Description("Проверяем наличие в теле ответа объекта \"orders\" и статус код 200")
-     public void checkAllActiveCourierOrders(){
+     public void checkAllActiveCourierOrders() throws InterruptedException {
         RandomDataForCourier randomData  = new RandomDataForCourier(); //экземпляр класса для создания данных курьера
         RandomDataForOrder data = new RandomDataForOrder(); //экземпляр класса для создания данных запроса
         CourierRequest courierRequest = new CourierRequest(); //экземпляр класс для работы с АПИ курьера
@@ -43,7 +43,7 @@ public class GetOrderTest {
     @Test
     @DisplayName("Получение активных заказов курьера на станциях метро")
     @Description("Проверяем наличие в теле ответа объекта \"orders\" и статус код 200")
-    public void checkAllActiveCouriersOrdersNearestStation() {
+    public void checkAllActiveCouriersOrdersNearestStation() throws InterruptedException {
         RandomDataForCourier randomData  = new RandomDataForCourier(); //экземпляр класса для создания данных курьера
         RandomDataForOrder data = new RandomDataForOrder();//экземпляр класса для создания данных запроса
         CourierRequest courierRequest = new CourierRequest(); //экземпляр класс для работы с АПИ курьера

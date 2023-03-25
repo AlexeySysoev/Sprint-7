@@ -18,7 +18,7 @@ public class LoginCourierTest {
     @Test
     @DisplayName("Корректный логин курьера")
     @Description("Проверяем тело ответа и статускод 200")
-    public void checkLoginCourierWithRequiredFieldsPassed() {
+    public void checkLoginCourierWithRequiredFieldsPassed() throws InterruptedException {
         RandomDataForCourier randomData  = new RandomDataForCourier(); //экземпляр класса для создания данных
         Courier courier = //создаем курьера с рандомными данными
                 new CourierV1(randomData.generateLogin(),randomData.generatePassword());
@@ -34,7 +34,7 @@ public class LoginCourierTest {
     @Test
     @DisplayName("Логин курьера без поля login")
     @Description("Проверяем тело ответа и статускод 400")
-    public void checkLoginCourierWithoutLoginFieldReturnBadRequest() {
+    public void checkLoginCourierWithoutLoginFieldReturnBadRequest() throws InterruptedException {
         RandomDataForCourier randomData  = new RandomDataForCourier(); //экземпляр класса для создания данных
         String pass = randomData.generatePassword();
         Courier courier = //создаем курьера с рандомными данными
@@ -53,7 +53,7 @@ public class LoginCourierTest {
     @DisplayName("Логин курьера без поля password")
     @Description("Проверяем тело ответа и статускод 400")
     @Issue("BUG-001")
-    public void checkLoginCourierWithoutPasswordFieldReturnBadRequest() {
+    public void checkLoginCourierWithoutPasswordFieldReturnBadRequest() throws InterruptedException {
         RandomDataForCourier randomData  = new RandomDataForCourier(); //экземпляр класса для создания данных
         String login = randomData.generateLogin();
         Courier courier = //создаем курьера с рандомными данными
@@ -74,7 +74,7 @@ public class LoginCourierTest {
     @Test
     @DisplayName("Логин курьера  неверным(несуществующим) login")
     @Description("Проверяем тело ответа и статус код 400")
-    public void checkLoginCourierWithInvalidLoginFieldReturnNotFound() {
+    public void checkLoginCourierWithInvalidLoginFieldReturnNotFound() throws InterruptedException {
         RandomDataForCourier randomData  = new RandomDataForCourier(); //экземпляр класса для создания данных
         Courier courier = //создаем курьера с рандомными данными
                 new CourierV1(randomData.generateLogin(),randomData.generatePassword());
@@ -90,7 +90,7 @@ public class LoginCourierTest {
     @Test
     @DisplayName("Логин курьера  неверным(несуществующим) password")
     @Description("Проверяем тело ответа и статус код 404")
-    public void checkLoginCourierWithInvalidPasswordFieldReturnNotFound() {
+    public void checkLoginCourierWithInvalidPasswordFieldReturnNotFound() throws InterruptedException {
         RandomDataForCourier randomData  = new RandomDataForCourier(); //экземпляр класса для создания данных
         String login = randomData.generateLogin();
         Courier courier = //создаем курьера с рандомными данными

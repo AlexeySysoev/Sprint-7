@@ -1,8 +1,10 @@
 package createorderdata;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import specs.Specs;
+
 import static io.restassured.RestAssured.given;
-public class Order {
+public class Order extends Specs {
     private final String uri = "http://qa-scooter.praktikum-services.ru";
     private final String orders = "/api/v1/orders";
     public Response orderRequest(CreateOrderData order){
@@ -52,13 +54,16 @@ public class Order {
                 .when()
                 .get("/api/v1/orders?courierId="+courierId);
     }
-    public Response getOrderByTrack(int track) {
+    public int getOrderNumberByTrack(int track) {
         return given().log().all()
                 .contentType(ContentType.JSON)
                 .queryParam("t", String.valueOf(track))
                 .baseUri(uri)
                 .when()
-                .get("/api/v1/orders/track");
+                .get("/api/v1/orders/track")
+                .then()
+                .extract()
+                .path("order.id");
     }
     public Response getOrderAccessibleForCourier(){
         return given().log().all()
@@ -87,5 +92,11 @@ public class Order {
                 .baseUri(uri)
                 .when()
                 .put("/api/v1/orders/accept/"+track+"?courierId="+courierId);
+    }
+    public Response acceptOrderByCourier (int orderId, int courierId) throws InterruptedException {
+        return baseCourierSpec()
+                .queryParam("courierId", String.valueOf(courierId))
+                .when()
+                .put(ACCEPT_ORDER+orderId);
     }
 }
