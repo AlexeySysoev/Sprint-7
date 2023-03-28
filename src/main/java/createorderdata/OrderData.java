@@ -1,7 +1,7 @@
 package createorderdata;
 import java.util.List;
 
-public class CreateOrderData {
+public class OrderData {
     private String firstName;
     private String lastName;
     private String address;
@@ -11,9 +11,9 @@ public class CreateOrderData {
     private String deliveryDate;
     private String comment;
     private List<String> color;
-    public CreateOrderData(String firstName, String lastName, String address,
-                           String metroStation, String phone, int rentTime,
-                           String deliveryDate, String comment, List<String> color){
+    public OrderData(String firstName, String lastName, String address,
+                     String metroStation, String phone, int rentTime,
+                     String deliveryDate, String comment, List<String> color){
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
@@ -24,7 +24,7 @@ public class CreateOrderData {
         this.comment = comment;
         this.color = color;
     }
-    public CreateOrderData(){}
+    public OrderData(){}
     public String getFirstName() {
         return firstName;
     }

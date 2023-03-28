@@ -1,4 +1,4 @@
-import createorderdata.CreateOrderData;
+import createorderdata.OrderData;
 import createorderdata.Order;
 import createorderdata.RandomDataForOrder;
 import io.qameta.allure.Description;
@@ -28,7 +28,7 @@ public static Object[][] params(){
     @Description("Проверяем наличие в ответе не пустого track и статус код 201")
     public void checkCreateOrderColorField() {
         RandomDataForOrder data = new RandomDataForOrder(); //экземпляр класса для создания данных запроса
-        CreateOrderData orderData = new CreateOrderData(data.generateName(), data.generateName(), data.generateAddress(),
+        OrderData orderData = new OrderData(data.generateName(), data.generateName(), data.generateAddress(),
                 data.generateMetroStation(), data.generatePhoneNumber(), data.generateRentTime(),
                 data.getDeliveryDate(), data.generateComment(),
                                                     color);

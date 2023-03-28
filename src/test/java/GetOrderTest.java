@@ -1,12 +1,11 @@
 import createcourier.*;
-import createorderdata.CreateOrderData;
+import createorderdata.OrderData;
 import createorderdata.Order;
 import createorderdata.RandomDataForOrder;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import java.util.Arrays;
@@ -31,7 +30,7 @@ public class GetOrderTest {
         courierRequest.createCourier(courier); //Отправляем Пост на создание курьера
         int courierId = courierRequest.getCourierId(courier); //Логин курьера и получение id
         //создаем объект для заказа
-        CreateOrderData orderData = new CreateOrderData(data.generateName(), data.generateName(), data.generateAddress(),
+        OrderData orderData = new OrderData(data.generateName(), data.generateName(), data.generateAddress(),
                                                         data.generateMetroStation(), data.generatePhoneNumber(), data.generateRentTime(),
                                                         data.getDeliveryDate(), data.generateComment(), Arrays.asList("BLACK"));
         int track = order.getTrackNumberOfOrder(orderData); //создание заказа в бд и получение трек номера
@@ -53,7 +52,7 @@ public class GetOrderTest {
         courierRequest.createCourier(courier); //Отправляем Пост на создание курьера
         int courierId = courierRequest.getCourierId(courier);//Логин курьера и получение id
         //создаем объект для заказа
-        CreateOrderData orderData = new CreateOrderData(data.generateName(), data.generateName(), data.generateAddress(),
+        OrderData orderData = new OrderData(data.generateName(), data.generateName(), data.generateAddress(),
                 data.generateMetroStation(), data.generatePhoneNumber(), data.generateRentTime(),
                 data.getDeliveryDate(), data.generateComment(), Arrays.asList("BLACK"));
         int track = order.getTrackNumberOfOrder(orderData); //создание заказа в бд и получение трек номера
@@ -69,7 +68,7 @@ public class GetOrderTest {
         RandomDataForOrder data = new RandomDataForOrder();//экземпляр класса для создания данных запроса
         Order order = new Order();////экземпляр класса для работы с АПИ заказов
         //создаем объект для заказа
-        CreateOrderData orderData = new CreateOrderData(data.generateName(), data.generateName(), data.generateAddress(),
+        OrderData orderData = new OrderData(data.generateName(), data.generateName(), data.generateAddress(),
                 data.generateMetroStation(), data.generatePhoneNumber(), data.generateRentTime(),
                 data.getDeliveryDate(), data.generateComment(), Arrays.asList("BLACK"));
         order.orderRequest(orderData); //создание заказа в бд
@@ -82,7 +81,7 @@ public class GetOrderTest {
         RandomDataForOrder data = new RandomDataForOrder();//экземпляр класса для создания данных запроса
         Order order = new Order(); //экземпляр класса для работы с АПИ заказов
         //создаем объект для заказа
-        CreateOrderData orderData = new CreateOrderData(data.generateName(), data.generateName(), data.generateAddress(),
+        OrderData orderData = new OrderData(data.generateName(), data.generateName(), data.generateAddress(),
                 data.generateMetroStation(), data.generatePhoneNumber(), data.generateRentTime(),
                 data.getDeliveryDate(), data.generateComment(), Arrays.asList("BLACK"));
         order.orderRequest(orderData); //создание заказа в бд
@@ -102,7 +101,7 @@ public class GetOrderTest {
     @Test
     @DisplayName("Получение заказов без курьера")
     @Description("Осваиваем работу в вложенными объектами")
-    public void checkResponseBobyToNestedIssuesGetOrdersWithoutCourier() {
+    public void checkResponseBodyToNestedIssuesGetOrdersWithoutCourier() {
         Response response = order.getOrderWithoutCourier();
 
         int track =  response.then().extract().path("pageInfo.total");

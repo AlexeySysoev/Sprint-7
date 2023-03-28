@@ -7,7 +7,7 @@ import static io.restassured.RestAssured.given;
 public class Order extends Specs {
     private final String uri = "http://qa-scooter.praktikum-services.ru";
     private final String orders = "/api/v1/orders";
-    public Response orderRequest(CreateOrderData order){
+    public Response orderRequest(OrderData order){
         return given().log().all()
                 .contentType(ContentType.JSON)
                 .baseUri(uri)
@@ -22,7 +22,7 @@ public class Order extends Specs {
                 .when()
                 .get(orders);
     }
-    public int getTrackNumberOfOrder(CreateOrderData order){
+    public int getTrackNumberOfOrder(OrderData order){
         return given().log().all()
                 .header("Content-type", "application/json")
                 .baseUri(uri)
@@ -93,9 +93,9 @@ public class Order extends Specs {
                 .when()
                 .put("/api/v1/orders/accept/"+track+"?courierId="+courierId);
     }
-    public Response acceptOrderByCourier (int orderId, int courierId) throws InterruptedException {
+    public Response acceptOrderByCourier (String orderId, String courierId) throws InterruptedException {
         return baseCourierSpec()
-                .queryParam("courierId", String.valueOf(courierId))
+                .queryParam("courierId", courierId)
                 .when()
                 .put(ACCEPT_ORDER+orderId);
     }

@@ -27,6 +27,9 @@ public class CourierRequest extends Specs {
                 .extract()
                 .path("id");
     }
+    public int getCourierId(Response response) {
+        return response.then().extract().path("id");
+    }
     //логин курьера в системе
     public Response loginCourier(Courier courier){
         return given().log().all()

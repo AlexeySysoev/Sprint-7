@@ -1,8 +1,7 @@
-package createorderdata;
-
-import createcourier.Courier;
 import createcourier.CourierV1;
 import createcourier.RandomDataForCourier;
+import createorderdata.OrderData;
+import createorderdata.RandomDataForOrder;
 
 import java.util.List;
 import java.util.Random;
@@ -15,9 +14,9 @@ public class Creater {
     private final List<List<String>> allColorsList = List.of(noColor, black, grey, blackAndGrey);
     private RandomDataForOrder data = new RandomDataForOrder();
     private RandomDataForCourier randomData = new RandomDataForCourier();
-    public CreateOrderData createOrder() {
+    public OrderData createOrder() {
         List<String> randomColorList = allColorsList.get(new Random().nextInt(allColorsList.size()));
-        return new CreateOrderData (data.generateName(), data.generateName(), data.generateAddress(),
+        return new OrderData(data.generateName(), data.generateName(), data.generateAddress(),
                 data.generateMetroStation(), data.generatePhoneNumber(), data.generateRentTime(),
                 data.getDeliveryDate(), data.generateComment(),
                 randomColorList);
