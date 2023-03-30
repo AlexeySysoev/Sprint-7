@@ -8,21 +8,29 @@ public class CourierRequest extends Specs {
     private final String uri = "http://qa-scooter.praktikum-services.ru";
     private final String newCourierApi = "/api/v1/courier";
     private final String loginCourier = "/api/v1/courier/login";
+    private int id;
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int courierId) {
+        this.id = courierId;
+    }
+
+
     //создание курьера в БД
-    public Response createCourier(Courier courier){
-        return given().log().all()
-                .header("Content-type", "application/json")
-                .baseUri(uri)
+    public Response createCourier(Courier courier) throws InterruptedException {
+        return baseSpec()
                 .body(courier)
                 .when()
-                .post(newCourierApi);
+                .post(NEW_COURIER_API);
     }
     //получить id курьера
     public int getCourierId(Courier courier) throws InterruptedException {
-        return baseCourierSpec()
+        return baseSpec()
                 .body(courier)
                 .when()
-                .post(loginCourier)
+                .post(LOGIN_COURIER)
                 .then()
                 .extract()
                 .path("id");
@@ -37,7 +45,7 @@ public class CourierRequest extends Specs {
                 .baseUri(uri)
                 .body(courier)
                 .when()
-                .post(loginCourier);
+                .post(LOGIN_COURIER);
     }
     //удаление курьера из БД
     public Response deleteCourier(int id){

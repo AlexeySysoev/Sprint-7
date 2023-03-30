@@ -1,5 +1,5 @@
 import createorderdata.OrderData;
-import createorderdata.Order;
+import createorderdata.OrderRequest;
 import createorderdata.RandomDataForOrder;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
@@ -32,9 +32,9 @@ public static Object[][] params(){
                 data.generateMetroStation(), data.generatePhoneNumber(), data.generateRentTime(),
                 data.getDeliveryDate(), data.generateComment(),
                                                     color);
-        Order sendOrder = new Order(); //экземпляр класса для работы с АПИ
+        OrderRequest sendOrder = new OrderRequest(); //экземпляр класса для работы с АПИ
         //Отправляем заказ и проверяем наличие значения в "track" и статус код
-        sendOrder.orderRequest(orderData).then().assertThat().body("track",notNullValue()).and().statusCode(201);
+        sendOrder.createOrder(orderData).then().assertThat().body("track",notNullValue()).and().statusCode(201);
         //Получаем трек номер заказа
         int track  = sendOrder.getTrackNumberOfOrder(orderData);
         //Отмена заказа

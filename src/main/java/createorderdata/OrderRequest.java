@@ -1,13 +1,15 @@
 package createorderdata;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import orderbytrackdeserializator.Order;
+import orderbytrackdeserializator.OrderByTrack;
 import specs.Specs;
 
 import static io.restassured.RestAssured.given;
-public class Order extends Specs {
+public class OrderRequest extends Specs {
     private final String uri = "http://qa-scooter.praktikum-services.ru";
     private final String orders = "/api/v1/orders";
-    public Response orderRequest(OrderData order){
+    public Response createOrder(OrderData order){
         return given().log().all()
                 .contentType(ContentType.JSON)
                 .baseUri(uri)
@@ -21,6 +23,19 @@ public class Order extends Specs {
                 .baseUri(uri)
                 .when()
                 .get(orders);
+    }
+    public Response getOrderByTrack(String track) throws InterruptedException {
+        return baseSpecForQuery()
+                .queryParam("t", track)
+                .baseUri(URI)
+                .get(ORDER_BY_TRACK);
+    }
+    public OrderByTrack getOrderObjByTrack(String track) throws InterruptedException {
+        return baseSpecForQuery()
+                .queryParam("t", track)
+                .baseUri(URI)
+                .get(ORDER_BY_TRACK)
+                .as(OrderByTrack.class);
     }
     public int getTrackNumberOfOrder(OrderData order){
         return given().log().all()
@@ -94,9 +109,9 @@ public class Order extends Specs {
                 .put("/api/v1/orders/accept/"+track+"?courierId="+courierId);
     }
     public Response acceptOrderByCourier (String orderId, String courierId) throws InterruptedException {
-        return baseCourierSpec()
+        return baseSpec()
                 .queryParam("courierId", courierId)
                 .when()
-                .put(ACCEPT_ORDER+orderId);
+                .put(ACCEPT_ORDER + orderId);
     }
 }

@@ -2,23 +2,21 @@ import createcourier.*;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
+import org.junit.After;
 import org.junit.Test;
 import static org.hamcrest.CoreMatchers.equalTo;
 public class CreateCourierTest {
+    private Creater creater = new Creater();
+    private CourierRequest courierRequest = new CourierRequest();
     @Test
     @DisplayName("Корректное создание курьера")
     @Description("Проверяем тело ответа и статускод 201")
     public void checkCreateCourierWithWrightData() throws InterruptedException {
-        RandomDataForCourier randomData = new RandomDataForCourier(); //экземпляр класса для создания данных
-        Courier courier = //создаем курьера с рандомными данными
-                new CourierV1(randomData.generateLogin(), randomData.generatePassword(), randomData.generateFirstName());
-        CourierRequest courierRequest = new CourierRequest(); //экземпляр класс для работы с АПИ курьера
-        //Отправляем Пост на создание курьера
+        CourierV1 courier = creater.createCourier();
         Response response = courierRequest.createCourier(courier);
-        //Проверяем тело ответа и статускод
-        response.then().assertThat().body("ok", equalTo(true)).and().statusCode(201);
-        //удаляем курьера из базы данных
-        courierRequest.deleteCourier(courierRequest.getCourierId(courier));
+        Response loginResponse = courierRequest.loginCourier(courier);
+        courierRequest.setId(courierRequest.getCourierId(loginResponse));
+        response.then().assertThat().statusCode(201).and().body("ok", equalTo(true));
     }
     @Test
     @DisplayName("Попытка создания уже существующего курьера")
@@ -86,5 +84,9 @@ public class CreateCourierTest {
                 .body("message", equalTo("Недостаточно данных для создания учетной записи")).and().statusCode(400);
         //Удаление курьера в случае его создания
         courierRequest.deleteWrongCourier(response,courier);
+    }
+    @After
+    public void deleteCourier() {
+        courierRequest.deleteCourier(courierRequest.getId());
     }
 }

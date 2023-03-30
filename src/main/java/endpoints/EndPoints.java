@@ -6,4 +6,5 @@ public class EndPoints {
     public final String LOGIN_COURIER = "/api/v1/courier/login";
     public final String ORDERS = "/api/v1/orders";
     public final String ACCEPT_ORDER = ORDERS + "/accept/";
+    public final String ORDER_BY_TRACK = "/api/v1/orders/track";
 }

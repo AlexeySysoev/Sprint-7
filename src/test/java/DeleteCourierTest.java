@@ -15,7 +15,7 @@ public class DeleteCourierTest {
     @Test
     @DisplayName("Успешное удаление курьера возвращает ok: true")
     @Description("Проверяем наличие 200, ok = true")
-    public void deleteCourierReturnOkTrueInResponse() {
+    public void deleteCourierReturnOkTrueInResponse() throws InterruptedException {
         courierRequest.createCourier(courier);
         Response response = courierRequest.loginCourier(courier);
         Response deleteResponse = courierRequest.deleteCourier(response);
@@ -26,7 +26,7 @@ public class DeleteCourierTest {
     @DisplayName("удаление курьера без id возвращает 400: Недостаточно данных для удаления курьера")
     @Description("Проверяем код 400, message:  Недостаточно данных для удаления курьера")
     @Issue("Bug - получаем 404 вместо 400")
-    public void deleteCourierWithoutIdReturnBadRequest() {
+    public void deleteCourierWithoutIdReturnBadRequest() throws InterruptedException {
         courierRequest.createCourier(courier);
         courierRequest.loginCourier(courier);
         Response deleteResponse = courierRequest.deleteCourier("");
@@ -36,7 +36,7 @@ public class DeleteCourierTest {
     @Test
     @DisplayName("удаление курьера c несуществующим id возвращает 404: Курьера с таким id нет")
     @Description("Проверяем наличие 404, message: Курьера с таким id нет")
-    public void deleteCourierWithWrongIdReturnNotFound() {
+    public void deleteCourierWithWrongIdReturnNotFound() throws InterruptedException {
         courierRequest.createCourier(courier);
         courierRequest.loginCourier(courier);
         String id = RandomStringUtils.randomNumeric(6);

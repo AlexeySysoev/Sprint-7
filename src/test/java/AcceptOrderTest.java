@@ -1,7 +1,7 @@
 import createcourier.CourierRequest;
 import createcourier.CourierV1;
 import createorderdata.OrderData;
-import createorderdata.Order;
+import createorderdata.OrderRequest;
 import io.qameta.allure.Description;
 import io.qameta.allure.Issue;
 import io.qameta.allure.junit4.DisplayName;
@@ -15,14 +15,14 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 
 public class AcceptOrderTest {
     private Creater creater = new Creater();
-    private Order sendOrder = new Order();
+    private OrderRequest sendOrder = new OrderRequest();
     private OrderData orderData = creater.createOrder();
     private CourierRequest courierRequest = new CourierRequest();
     @Test
     @DisplayName("Проверка успешного принятия заказа курьером")
     @Description("Ожидаем 200 и ок-true")
     public void checkCreateOrderColorField() throws InterruptedException {
-        Response response = sendOrder.orderRequest(orderData); //Создание заказа
+        Response response = sendOrder.createOrder(orderData); //Создание заказа
         int track  = sendOrder.getTrackNumberOfOrder(response); //Получаем трек номер заказа
         String orderId = String.valueOf(sendOrder.getOrderNumberByTrack(track)); //Получаем id заказа по треку
         CourierV1 courier = creater.createCourier();
@@ -39,7 +39,7 @@ public class AcceptOrderTest {
     @Description("Ожидаем - 400 Conflict, \"message\": \"Недостаточно данных для поиска\"")
     @Issue("Bug-00X 404 вместо 400")
     public void acceptOrderWithoutOrderIdReturnConflict() throws InterruptedException {
-        Response response = sendOrder.orderRequest(orderData); //Создание заказа
+        Response response = sendOrder.createOrder(orderData); //Создание заказа
         int track  = sendOrder.getTrackNumberOfOrder(response); //Получаем трек номер заказа
         sendOrder.getOrderNumberByTrack(track); //Получаем id заказа по треку
         CourierV1 courier = creater.createCourier();
@@ -55,7 +55,7 @@ public class AcceptOrderTest {
     @DisplayName("Запрос без id курьера выдает ошибку")
     @Description("Ожидаем - 400 Conflict, \"message\": \"Недостаточно данных для поиска\"")
     public void acceptOrderWithoutCourierIdReturnConflict() throws InterruptedException {
-        Response response = sendOrder.orderRequest(orderData); //Создание заказа
+        Response response = sendOrder.createOrder(orderData); //Создание заказа
         int track  = sendOrder.getTrackNumberOfOrder(response); //Получаем трек номер заказа
         String orderId = String.valueOf(sendOrder.getOrderNumberByTrack(track)); //Получаем id заказа по треку
         CourierV1 courier = creater.createCourier();
@@ -71,7 +71,7 @@ public class AcceptOrderTest {
     @Description("Ожидаем - 404 Not Found, \"message\": \"Заказа с таким id не существует\"")
     @Issue("Bug-00X - 409 вместо 404")
     public void acceptOrderWithWrongOrderIdReturnNotFound() throws InterruptedException {
-        Response response = sendOrder.orderRequest(orderData); //Создание заказа
+        Response response = sendOrder.createOrder(orderData); //Создание заказа
         int track  = sendOrder.getTrackNumberOfOrder(response); //Получаем трек номер заказа
         String orderId = String.valueOf(sendOrder.getOrderNumberByTrack(track)); //Получаем id заказа по треку
         CourierV1 courier = creater.createCourier();
@@ -87,7 +87,7 @@ public class AcceptOrderTest {
     @DisplayName("Запрос с неверным id курьера выдает ошибку")
     @Description("Ожидаем - 404 Not Found, \"message\": \"Курьера с таким id не существует\"")
     public void acceptOrderWithWrongCourierIdReturnNotFound() throws InterruptedException {
-        Response response = sendOrder.orderRequest(orderData); //Создание заказа
+        Response response = sendOrder.createOrder(orderData); //Создание заказа
         int track  = sendOrder.getTrackNumberOfOrder(response); //Получаем трек номер заказа
         String orderId = String.valueOf(sendOrder.getOrderNumberByTrack(track)); //Получаем id заказа по треку
         CourierV1 courier = creater.createCourier();

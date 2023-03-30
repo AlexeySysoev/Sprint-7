@@ -1,6 +1,6 @@
 import createcourier.*;
 import createorderdata.OrderData;
-import createorderdata.Order;
+import createorderdata.OrderRequest;
 import createorderdata.RandomDataForOrder;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
@@ -12,7 +12,7 @@ import java.util.Arrays;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 public class GetOrderTest {
-     private Order order = new Order();
+     private OrderRequest order = new OrderRequest();
     @Before
     public void setUp() {
         RestAssured.baseURI = "http://qa-scooter.praktikum-services.ru";
@@ -24,7 +24,7 @@ public class GetOrderTest {
         RandomDataForCourier randomData  = new RandomDataForCourier(); //экземпляр класса для создания данных курьера
         RandomDataForOrder data = new RandomDataForOrder(); //экземпляр класса для создания данных запроса
         CourierRequest courierRequest = new CourierRequest(); //экземпляр класс для работы с АПИ курьера
-        Order order = new Order(); //экземпляр класса для работы с АПИ заказов
+        OrderRequest order = new OrderRequest(); //экземпляр класса для работы с АПИ заказов
         Courier courier = //создаем объект курьера с рандомными данными
                 new CourierV1(randomData.generateLogin(),randomData.generatePassword());
         courierRequest.createCourier(courier); //Отправляем Пост на создание курьера
@@ -46,7 +46,7 @@ public class GetOrderTest {
         RandomDataForCourier randomData  = new RandomDataForCourier(); //экземпляр класса для создания данных курьера
         RandomDataForOrder data = new RandomDataForOrder();//экземпляр класса для создания данных запроса
         CourierRequest courierRequest = new CourierRequest(); //экземпляр класс для работы с АПИ курьера
-        Order order = new Order();////экземпляр класса для работы с АПИ заказов
+        OrderRequest order = new OrderRequest();////экземпляр класса для работы с АПИ заказов
         Courier courier = //создаем объект курьера с рандомными данными
                 new CourierV1(randomData.generateLogin(),randomData.generatePassword());
         courierRequest.createCourier(courier); //Отправляем Пост на создание курьера
@@ -66,12 +66,12 @@ public class GetOrderTest {
     @Description("Проверяем наличие в теле ответа объекта \"orders\" и статус код 200")
     public void checkAccessibleForCourierOrders(){
         RandomDataForOrder data = new RandomDataForOrder();//экземпляр класса для создания данных запроса
-        Order order = new Order();////экземпляр класса для работы с АПИ заказов
+        OrderRequest order = new OrderRequest();////экземпляр класса для работы с АПИ заказов
         //создаем объект для заказа
         OrderData orderData = new OrderData(data.generateName(), data.generateName(), data.generateAddress(),
                 data.generateMetroStation(), data.generatePhoneNumber(), data.generateRentTime(),
                 data.getDeliveryDate(), data.generateComment(), Arrays.asList("BLACK"));
-        order.orderRequest(orderData); //создание заказа в бд
+        order.createOrder(orderData); //создание заказа в бд
         order.getOrderAccessibleForCourier().then().body("orders", notNullValue()).and().statusCode(200);
     }
     @Test
@@ -79,12 +79,12 @@ public class GetOrderTest {
     @Description("Проверяем наличие в теле ответа объекта \"orders\" и статус код 200")
     public void checkAccessibleForCourierOrdersNearestStation(){
         RandomDataForOrder data = new RandomDataForOrder();//экземпляр класса для создания данных запроса
-        Order order = new Order(); //экземпляр класса для работы с АПИ заказов
+        OrderRequest order = new OrderRequest(); //экземпляр класса для работы с АПИ заказов
         //создаем объект для заказа
         OrderData orderData = new OrderData(data.generateName(), data.generateName(), data.generateAddress(),
                 data.generateMetroStation(), data.generatePhoneNumber(), data.generateRentTime(),
                 data.getDeliveryDate(), data.generateComment(), Arrays.asList("BLACK"));
-        order.orderRequest(orderData); //создание заказа в бд
+        order.createOrder(orderData); //создание заказа в бд
         order.getOrderAccessibleForCourierNearestStation().then().body("orders", notNullValue()).and().statusCode(200);
     }
     @Test
@@ -92,7 +92,7 @@ public class GetOrderTest {
     @DisplayName("Попытка получения заказов с несуществующим id курьера")
     @Description("Проверяем наличие в тело ответа и статус код 404")
     public void checkAllActiveCourierOrdersWithWrongCourierIdReturnNotFound(){
-        Order order = new Order(); //экземпляр класса для работы с АПИ заказов
+        OrderRequest order = new OrderRequest(); //экземпляр класса для работы с АПИ заказов
         RandomDataForCourier randomCourierId = new RandomDataForCourier(); //экземпляр класса для создания данных курьера
         int id = randomCourierId.generateCourierId()+1000000; //создание случайного id
         Response response = order.getOrderWithId(id); //отправляем запрос на список заказов курьера с несуществующим id
