@@ -22,21 +22,18 @@ public class CreateCourierTest {
     @DisplayName("Попытка создания уже существующего курьера")
     @Description("Проверяем тело ответа на наличие \"Этот логин уже используется. Попробуйте другой.\" и статус код 409")
     public void checkDoubleCreateCourierReturnConflict() throws InterruptedException {
-        RandomDataForCourier randomData = new RandomDataForCourier(); //экземпляр класса для создания данных
-        Courier courier = //создаем курьера с рандомными данными
-                new CourierV1(randomData.generateLogin(), randomData.generatePassword(), randomData.generateFirstName());
-        CourierRequest courierRequest = new CourierRequest(); //экземпляр класс для работы с АПИ курьера
+        CourierV1 courier = creater.createCourier();
         //Отправляем Пост на создание курьера в первый раз
         courierRequest.createCourier(courier);
         //Делаем попытку создать курьера повторно с теми же данными  сохраняем ответ
         Response response = courierRequest.createCourier(courier);
+        Response loginResponse = courierRequest.loginCourier(courier);
+        courierRequest.setId(courierRequest.getCourierId(loginResponse));
         //Проверяем тело и статускод ответа
         response.then()
-                .assertThat().body("message", equalTo("Этот логин уже используется. Попробуйте другой."))
+                .statusCode(409)
                 .and()
-                .statusCode(409);
-        //Удаление курьера в случае его создания
-        courierRequest.deleteWrongCourier(response,courier);
+                .assertThat().body("message", equalTo("Этот логин уже используется. Попробуйте другой."));
     }
     @Test
     //Попытка создать курьера без поля login
@@ -44,46 +41,35 @@ public class CreateCourierTest {
     @DisplayName("Попытка создать курьера без поля login")
     @Description("Проверяем тело ответа на наличие \"Недостаточно данных для создания учетной записи\" и статус код 400")
     public void checkCreateCourierWithoutLoginFailed() throws InterruptedException {
-        RandomDataForCourier randomData = new RandomDataForCourier(); //экземпляр класса для создания данных
-        Courier courier = //создаем курьера с рандомными данными
-                new CourierV3(randomData.generatePassword(), randomData.generateFirstName());
-        CourierRequest courierRequest = new CourierRequest();//экземпляр класс для работы с АПИ курьера
-        Response response = courierRequest.createCourier(courier);//отправляем запрос
-        //проверяем тело ответа и статускод
+        CourierV1 courier = creater.createCourier();
+        courier.setLogin(null);
+        Response response = courierRequest.createCourier(courier);
         response.then().assertThat()
-                .body("message", equalTo("Недостаточно данных для создания учетной записи")).and().statusCode(400);
-        //Удаление курьера в случае его создания
-        courierRequest.deleteWrongCourier(response,courier);
+                .statusCode(400)
+                .body("message", equalTo("Недостаточно данных для создания учетной записи"));
     }
     @Test
     @DisplayName("Попытка создать курьера без поля password")
     @Description("Проверяем тело ответа на наличие \"Недостаточно данных для создания учетной записи\" и статус код 400")
     public void checkCreateCourierWithoutPasswordFailed() throws InterruptedException {
-        RandomDataForCourier randomData = new RandomDataForCourier(); //экземпляр класса для создания данных
-        Courier courier = //создаем курьера с рандомными данными
-                new CourierV2(randomData.generateLogin(), randomData.generateFirstName());
-        CourierRequest courierRequest = new CourierRequest();//экземпляр класс для работы с АПИ курьера
-        Response response = courierRequest.createCourier(courier);//отправляем запрос
-        //проверяем тело ответа и статускод
+        CourierV1 courier = creater.createCourier();
+        courier.setPassword(null);
+        Response response = courierRequest.createCourier(courier);
         response.then().assertThat()
-                .body("message", equalTo("Недостаточно данных для создания учетной записи")).and().statusCode(400);
-        //Удаление курьера в случае его создания
-        courierRequest.deleteWrongCourier(response,courier);
+                .statusCode(400)
+                .body("message", equalTo("Недостаточно данных для создания учетной записи"));
     }
     @Test
     @DisplayName("Попытка создать курьера без полей login,password")
     @Description("Проверяем тело ответа на наличие \"Недостаточно данных для создания учетной записи\" и статус код 400")
     public void checkCreateCourierWithoutLoginAndPasswordFailed() throws InterruptedException {
-        RandomDataForCourier randomData = new RandomDataForCourier(); //экземпляр класса для создания данных
-        Courier courier = //создаем курьера с рандомными данными
-                new CourierV2(randomData.generateFirstName());
-        CourierRequest courierRequest = new CourierRequest();//экземпляр класс для работы с АПИ курьера
-        Response response = courierRequest.createCourier(courier);//отправляем запрос
-        //проверяем тело ответа и статускод
+        CourierV1 courier = creater.createCourier();
+        courier.setLogin(null);
+        courier.setPassword(null);
+        Response response = courierRequest.createCourier(courier);
         response.then().assertThat()
-                .body("message", equalTo("Недостаточно данных для создания учетной записи")).and().statusCode(400);
-        //Удаление курьера в случае его создания
-        courierRequest.deleteWrongCourier(response,courier);
+                .statusCode(400)
+                .body("message", equalTo("Недостаточно данных для создания учетной записи"));
     }
     @After
     public void deleteCourier() {

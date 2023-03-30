@@ -8,8 +8,8 @@ public class CourierRequest extends Specs {
     private final String uri = "http://qa-scooter.praktikum-services.ru";
     private final String newCourierApi = "/api/v1/courier";
     private final String loginCourier = "/api/v1/courier/login";
-    private int id;
-    public int getId() {
+    private Integer id = null;
+    public Integer getId() {
         return id;
     }
 
@@ -48,12 +48,14 @@ public class CourierRequest extends Specs {
                 .post(LOGIN_COURIER);
     }
     //удаление курьера из БД
-    public Response deleteCourier(int id){
-        return given().log().all()
-                .contentType(ContentType.JSON)
-                .baseUri(uri)
-                .when()
-                .delete(newCourierApi + "/" + id);
+    public void deleteCourier(Integer id){
+        if (id != null) {
+            given().log().all()
+                    .contentType(ContentType.JSON)
+                    .baseUri(uri)
+                    .when()
+                    .delete(newCourierApi + "/" + id);
+        }
     }
     public Response deleteCourier(String id){
         return given().log().all()
@@ -72,11 +74,14 @@ public class CourierRequest extends Specs {
            return response.then().extract().path("id");
     }
     public Response deleteCourier(Response response) {
+            if(response.then().extract().statusCode() ==200 || response.then().extract().statusCode()==201){
             String id = "/" + response.then().extract().path("id").toString();
             return given().log().all()
                     .contentType(ContentType.JSON)
                     .baseUri(uri)
                     .when()
                     .delete(newCourierApi + id);
+            }
+            else return response;
     }
 }
