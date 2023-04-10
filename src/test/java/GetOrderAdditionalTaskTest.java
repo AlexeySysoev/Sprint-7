@@ -7,6 +7,7 @@ import orderbytrackdeserializator.Order;
 import orderbytrackdeserializator.OrderByTrack;
 import org.junit.Test;
 
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
 public class GetOrderAdditionalTaskTest {
@@ -21,11 +22,13 @@ public class GetOrderAdditionalTaskTest {
         Response response = orderRequest.createOrder(orderData);
         String track = String.valueOf(orderRequest.getTrackNumberOfOrder(response));
         Response orderResponse = orderRequest.getOrderByTrack(track);
-        orderResponse.then().assertThat().statusCode(200).and().body("order.id", notNullValue());
-        OrderByTrack orderByTrack = orderResponse.as(OrderByTrack.class);
-        Order order = orderByTrack.getOrder();
-        int id = order.getId();
-        System.out.println(id);
-        System.out.println(orderByTrack.getOrder().getPhone());
+        orderResponse.then().assertThat()
+                .body(matchesJsonSchemaInClasspath("order_by_track_schema.json"));
+//        orderResponse.then().assertThat().statusCode(200).and().body("order.id", notNullValue());
+//        OrderByTrack orderByTrack = orderResponse.as(OrderByTrack.class);
+//        Order order = orderByTrack.getOrder();
+//        int id = order.getId();
+//        System.out.println(id);
+//        System.out.println(orderByTrack.getOrder().getPhone());
     }
 }
