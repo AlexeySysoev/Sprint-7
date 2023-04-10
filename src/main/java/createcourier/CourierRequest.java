@@ -1,20 +1,20 @@
 package createcourier;
+import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import specs.Specs;
 
 import static io.restassured.RestAssured.given;
 public class CourierRequest extends Specs {
-    private final String uri = "http://qa-scooter.praktikum-services.ru";
-    private final String newCourierApi = "/api/v1/courier";
-    private final String loginCourier = "/api/v1/courier/login";
     private Integer id = null;
     public Integer getId() {
         return id;
     }
 
-    public void setId(int courierId) {
-        this.id = courierId;
+    public void setId(Integer courierId) {
+        if (courierId != null) {
+            this.id = courierId;
+        }
     }
 
 
@@ -35,14 +35,19 @@ public class CourierRequest extends Specs {
                 .extract()
                 .path("id");
     }
-    public int getCourierId(Response response) {
-        return response.then().extract().path("id");
+    public Integer getCourierId(Response response) {
+        Integer id = null;
+        try { id = response.then().extract().path("id");}
+        catch (Exception e){
+            throw new NullPointerException();
+        }
+        return id;
     }
     //логин курьера в системе
     public Response loginCourier(Courier courier){
         return given().log().all()
                 .header("Content-type", "application/json")
-                .baseUri(uri)
+                .baseUri(URI)
                 .body(courier)
                 .when()
                 .post(LOGIN_COURIER);
@@ -52,17 +57,17 @@ public class CourierRequest extends Specs {
         if (id != null) {
             given().log().all()
                     .contentType(ContentType.JSON)
-                    .baseUri(uri)
+                    .baseUri(URI)
                     .when()
-                    .delete(newCourierApi + "/" + id);
+                    .delete(NEW_COURIER_API + "/" + id);
         }
     }
     public Response deleteCourier(String id){
         return given().log().all()
                 .contentType(ContentType.JSON)
-                .baseUri(uri)
+                .baseUri(URI)
                 .when()
-                .delete(newCourierApi + "/" + id);
+                .delete(NEW_COURIER_API + "/" + id);
     }
     public void deleteWrongCourier(Response response, Courier courier) throws InterruptedException {
         CourierRequest courierRequest = new CourierRequest();
@@ -78,9 +83,9 @@ public class CourierRequest extends Specs {
             String id = "/" + response.then().extract().path("id").toString();
             return given().log().all()
                     .contentType(ContentType.JSON)
-                    .baseUri(uri)
+                    .baseUri(URI)
                     .when()
-                    .delete(newCourierApi + id);
+                    .delete(NEW_COURIER_API + id);
             }
             else return response;
     }

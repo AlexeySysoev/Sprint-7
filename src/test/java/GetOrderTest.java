@@ -26,7 +26,7 @@ public class GetOrderTest {
         CourierRequest courierRequest = new CourierRequest(); //экземпляр класс для работы с АПИ курьера
         OrderRequest order = new OrderRequest(); //экземпляр класса для работы с АПИ заказов
         Courier courier = //создаем объект курьера с рандомными данными
-                new CourierV1(randomData.generateLogin(),randomData.generatePassword());
+                new Courier(randomData.generateLogin(),randomData.generatePassword());
         courierRequest.createCourier(courier); //Отправляем Пост на создание курьера
         int courierId = courierRequest.getCourierId(courier); //Логин курьера и получение id
         //создаем объект для заказа
@@ -48,7 +48,7 @@ public class GetOrderTest {
         CourierRequest courierRequest = new CourierRequest(); //экземпляр класс для работы с АПИ курьера
         OrderRequest order = new OrderRequest();////экземпляр класса для работы с АПИ заказов
         Courier courier = //создаем объект курьера с рандомными данными
-                new CourierV1(randomData.generateLogin(),randomData.generatePassword());
+                new Courier(randomData.generateLogin(),randomData.generatePassword());
         courierRequest.createCourier(courier); //Отправляем Пост на создание курьера
         int courierId = courierRequest.getCourierId(courier);//Логин курьера и получение id
         //создаем объект для заказа
@@ -64,7 +64,7 @@ public class GetOrderTest {
     @Test
     @DisplayName("Получение заказов, доступных для взятия курьером")
     @Description("Проверяем наличие в теле ответа объекта \"orders\" и статус код 200")
-    public void checkAccessibleForCourierOrders(){
+    public void checkAccessibleForCourierOrders() throws InterruptedException {
         RandomDataForOrder data = new RandomDataForOrder();//экземпляр класса для создания данных запроса
         OrderRequest order = new OrderRequest();////экземпляр класса для работы с АПИ заказов
         //создаем объект для заказа
@@ -77,7 +77,7 @@ public class GetOrderTest {
     @Test
     @DisplayName("Получение заказов, доступных для взятия курьером возле станции метро")
     @Description("Проверяем наличие в теле ответа объекта \"orders\" и статус код 200")
-    public void checkAccessibleForCourierOrdersNearestStation(){
+    public void checkAccessibleForCourierOrdersNearestStation() throws InterruptedException {
         RandomDataForOrder data = new RandomDataForOrder();//экземпляр класса для создания данных запроса
         OrderRequest order = new OrderRequest(); //экземпляр класса для работы с АПИ заказов
         //создаем объект для заказа
@@ -91,7 +91,7 @@ public class GetOrderTest {
     //запрос с несуществующим id курьера 404
     @DisplayName("Попытка получения заказов с несуществующим id курьера")
     @Description("Проверяем наличие в тело ответа и статус код 404")
-    public void checkAllActiveCourierOrdersWithWrongCourierIdReturnNotFound(){
+    public void checkAllActiveCourierOrdersWithWrongCourierIdReturnNotFound() throws InterruptedException {
         OrderRequest order = new OrderRequest(); //экземпляр класса для работы с АПИ заказов
         RandomDataForCourier randomCourierId = new RandomDataForCourier(); //экземпляр класса для создания данных курьера
         int id = randomCourierId.generateCourierId()+1000000; //создание случайного id
@@ -101,7 +101,7 @@ public class GetOrderTest {
     @Test
     @DisplayName("Получение заказов без курьера")
     @Description("Осваиваем работу в вложенными объектами")
-    public void checkResponseBodyToNestedIssuesGetOrdersWithoutCourier() {
+    public void checkResponseBodyToNestedIssuesGetOrdersWithoutCourier() throws InterruptedException {
         Response response = order.getOrderWithoutCourier();
 
         int track =  response.then().extract().path("pageInfo.total");

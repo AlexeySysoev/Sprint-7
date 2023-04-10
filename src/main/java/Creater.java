@@ -1,4 +1,4 @@
-import createcourier.CourierV1;
+import createcourier.Courier;
 import createcourier.RandomDataForCourier;
 import createorderdata.OrderData;
 import createorderdata.RandomDataForOrder;
@@ -16,13 +16,18 @@ public class Creater {
     private RandomDataForCourier randomData = new RandomDataForCourier();
     public OrderData createOrder() {
         List<String> randomColorList = allColorsList.get(new Random().nextInt(allColorsList.size()));
-        return new OrderData(data.generateName(), data.generateName(), data.generateAddress(),
-                data.generateMetroStation(), data.generatePhoneNumber(), data.generateRentTime(),
-                data.getDeliveryDate(), data.generateComment(),
-                randomColorList);
+        return new OrderData(data.generateName(),
+                             data.generateName(),
+                             data.generateAddress(),
+                             data.generateMetroStation(),
+                             data.generatePhoneNumber(),
+                             data.generateRentTime(),
+                             data.getDeliveryDate(),
+                             data.generateComment(),
+                             randomColorList);
     }
-    public CourierV1 createCourier() {
-        return new CourierV1(randomData.generateLogin(),
+    public Courier createCourier() {
+        return new Courier(randomData.generateLogin(),
                              randomData.generatePassword(),
                              randomData.generateFirstName());
     }

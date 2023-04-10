@@ -9,9 +9,9 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 public class DeleteCourierTest {
-    RandomDataForCourier randomData = new RandomDataForCourier();
-    CourierRequest courierRequest = new CourierRequest();
-    Courier courier = new CourierV1(randomData.generateLogin(),randomData.generatePassword(),randomData.generateFirstName());
+    private CourierRequest courierRequest = new CourierRequest();
+    private Creater creater = new Creater();
+    private Courier courier = creater.createCourier();
     @Test
     @DisplayName("Успешное удаление курьера возвращает ok: true")
     @Description("Проверяем наличие 200, ok = true")
@@ -44,5 +44,4 @@ public class DeleteCourierTest {
         deleteResponse.then().assertThat().statusCode(404)
                 .and().body("message", equalTo("Курьера с таким id нет."));
     }
-
 }

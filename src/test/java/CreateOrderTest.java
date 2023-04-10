@@ -26,7 +26,7 @@ public static Object[][] params(){
     @Test
     @DisplayName("Создание заказа с различными вариациями цвета самоката")
     @Description("Проверяем наличие в ответе не пустого track и статус код 201")
-    public void checkCreateOrderColorField() {
+    public void checkCreateOrderColorField() throws InterruptedException {
         RandomDataForOrder data = new RandomDataForOrder(); //экземпляр класса для создания данных запроса
         OrderData orderData = new OrderData(data.generateName(), data.generateName(), data.generateAddress(),
                 data.generateMetroStation(), data.generatePhoneNumber(), data.generateRentTime(),

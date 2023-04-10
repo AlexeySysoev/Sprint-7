@@ -1,11 +1,12 @@
 import createcourier.CourierRequest;
-import createcourier.CourierV1;
+import createcourier.Courier;
 import createorderdata.OrderData;
 import createorderdata.OrderRequest;
 import io.qameta.allure.Description;
 import io.qameta.allure.Issue;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
+import org.junit.After;
 import org.junit.Test;
 
 import java.util.Random;
@@ -24,15 +25,15 @@ public class AcceptOrderTest {
     public void checkCreateOrderColorField() throws InterruptedException {
         Response response = sendOrder.createOrder(orderData); //Создание заказа
         int track  = sendOrder.getTrackNumberOfOrder(response); //Получаем трек номер заказа
+        sendOrder.setTrack(track);
         String orderId = String.valueOf(sendOrder.getOrderNumberByTrack(track)); //Получаем id заказа по треку
-        CourierV1 courier = creater.createCourier();
+        Courier courier = creater.createCourier();
         courierRequest.createCourier(courier);
         courier.setFirstName(null);
         Response loginResponse = courierRequest.loginCourier(courier);
         String courierId = String.valueOf(courierRequest.getCourierId(loginResponse));
         Response orderResponse = sendOrder.acceptOrderByCourier(orderId, courierId);
         orderResponse.then().statusCode(200).and().body("ok", equalTo(true));
-        sendOrder.cancelOrder(track); //Отмена заказа
     }
     @Test
     @DisplayName("Запрос без id заказа выдает ошибку")
@@ -41,15 +42,15 @@ public class AcceptOrderTest {
     public void acceptOrderWithoutOrderIdReturnConflict() throws InterruptedException {
         Response response = sendOrder.createOrder(orderData); //Создание заказа
         int track  = sendOrder.getTrackNumberOfOrder(response); //Получаем трек номер заказа
+        sendOrder.setTrack(track);
         sendOrder.getOrderNumberByTrack(track); //Получаем id заказа по треку
-        CourierV1 courier = creater.createCourier();
+        Courier courier = creater.createCourier();
         courierRequest.createCourier(courier);
         courier.setFirstName(null);
         Response loginResponse = courierRequest.loginCourier(courier);
         String courierId = String.valueOf(courierRequest.getCourierId(loginResponse));
         Response orderResponse = sendOrder.acceptOrderByCourier("", courierId);
         orderResponse.then().statusCode(400).and().body("message", equalTo("Недостаточно данных для поиска"));
-        sendOrder.cancelOrder(track); //Отмена заказа
     }
     @Test
     @DisplayName("Запрос без id курьера выдает ошибку")
@@ -57,14 +58,14 @@ public class AcceptOrderTest {
     public void acceptOrderWithoutCourierIdReturnConflict() throws InterruptedException {
         Response response = sendOrder.createOrder(orderData); //Создание заказа
         int track  = sendOrder.getTrackNumberOfOrder(response); //Получаем трек номер заказа
+        sendOrder.setTrack(track);
         String orderId = String.valueOf(sendOrder.getOrderNumberByTrack(track)); //Получаем id заказа по треку
-        CourierV1 courier = creater.createCourier();
+        Courier courier = creater.createCourier();
         courierRequest.createCourier(courier);
         courier.setFirstName(null);
         courierRequest.loginCourier(courier);
         Response orderResponse = sendOrder.acceptOrderByCourier(orderId, "");
         orderResponse.then().statusCode(400).and().body("message", equalTo("Недостаточно данных для поиска"));
-        sendOrder.cancelOrder(track); //Отмена заказа
     }
     @Test
     @DisplayName("Запрос с неверным id заказа выдает ошибку")
@@ -73,15 +74,15 @@ public class AcceptOrderTest {
     public void acceptOrderWithWrongOrderIdReturnNotFound() throws InterruptedException {
         Response response = sendOrder.createOrder(orderData); //Создание заказа
         int track  = sendOrder.getTrackNumberOfOrder(response); //Получаем трек номер заказа
+        sendOrder.setTrack(track);
         String orderId = String.valueOf(sendOrder.getOrderNumberByTrack(track)); //Получаем id заказа по треку
-        CourierV1 courier = creater.createCourier();
+        Courier courier = creater.createCourier();
         courierRequest.createCourier(courier);
         courier.setFirstName(null);
         Response loginResponse = courierRequest.loginCourier(courier);
         String courierId = String.valueOf(courierRequest.getCourierId(loginResponse));
         Response orderResponse = sendOrder.acceptOrderByCourier(String.valueOf(10000 + new Random().nextInt(10000)), courierId);
         orderResponse.then().statusCode(404).and().body("message", equalTo("Заказа с таким id не существует"));
-        sendOrder.cancelOrder(track); //Отмена заказа
     }
     @Test
     @DisplayName("Запрос с неверным id курьера выдает ошибку")
@@ -89,13 +90,17 @@ public class AcceptOrderTest {
     public void acceptOrderWithWrongCourierIdReturnNotFound() throws InterruptedException {
         Response response = sendOrder.createOrder(orderData); //Создание заказа
         int track  = sendOrder.getTrackNumberOfOrder(response); //Получаем трек номер заказа
+        sendOrder.setTrack(track);
         String orderId = String.valueOf(sendOrder.getOrderNumberByTrack(track)); //Получаем id заказа по треку
-        CourierV1 courier = creater.createCourier();
+        Courier courier = creater.createCourier();
         courierRequest.createCourier(courier);
         courier.setFirstName(null);
         courierRequest.loginCourier(courier);
         Response orderResponse = sendOrder.acceptOrderByCourier(orderId, String.valueOf(1000 + new Random().nextInt(10000)));
         orderResponse.then().statusCode(404).and().body("message", equalTo("Курьера с таким id не существует"));
-        sendOrder.cancelOrder(track); //Отмена заказа
+    }
+    @After
+    public void cancelOrder() throws InterruptedException {
+        sendOrder.cancelOrder(sendOrder.getTrack());
     }
 }
