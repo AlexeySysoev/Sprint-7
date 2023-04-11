@@ -8,7 +8,14 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.Before;
 import org.junit.Test;
+import utils.MetroStationMap;
+import utils.Stations;
+import java.util.List;
+import java.awt.*;
 import java.util.Arrays;
+import java.util.Map;
+import java.util.TreeMap;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 public class GetOrderTest {
@@ -106,5 +113,13 @@ public class GetOrderTest {
 
         int track =  response.then().extract().path("pageInfo.total");
         System.out.println("track from nested obj ==>> " + track);
+    }
+    @Test
+    public void getMetroStationsApiCheck() throws InterruptedException {
+        MetroStationMap stationMap = new MetroStationMap();
+        Map<Integer, String> stations = new TreeMap<>();
+        stations =  stationMap.getMetroStationObj();
+        System.out.println(stations);
+
     }
 }

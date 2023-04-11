@@ -4,6 +4,8 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import specs.Specs;
 
+import javax.annotation.Nonnull;
+
 import static io.restassured.RestAssured.given;
 public class CourierRequest extends Specs {
     private Integer id = null;
@@ -36,6 +38,7 @@ public class CourierRequest extends Specs {
                 .path("id");
     }
     public Integer getCourierId(Response response) {
+        //@Nonnull
         Integer id = null;
         try { id = response.then().extract().path("id");}
         catch (Exception e){

@@ -22,13 +22,8 @@ public class GetOrderAdditionalTaskTest {
         Response response = orderRequest.createOrder(orderData);
         String track = String.valueOf(orderRequest.getTrackNumberOfOrder(response));
         Response orderResponse = orderRequest.getOrderByTrack(track);
-        orderResponse.then().assertThat()
+        //Проверка схемы ответа
+        orderResponse.then().assertThat().statusCode(200).and()
                 .body(matchesJsonSchemaInClasspath("order_by_track_schema.json"));
-//        orderResponse.then().assertThat().statusCode(200).and().body("order.id", notNullValue());
-//        OrderByTrack orderByTrack = orderResponse.as(OrderByTrack.class);
-//        Order order = orderByTrack.getOrder();
-//        int id = order.getId();
-//        System.out.println(id);
-//        System.out.println(orderByTrack.getOrder().getPhone());
     }
 }

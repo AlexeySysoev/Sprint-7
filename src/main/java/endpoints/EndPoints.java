@@ -8,4 +8,6 @@ public class EndPoints {
     public final String ACCEPT_ORDER = "/api/v1/orders/accept/";
     public final String ORDER_BY_TRACK = "/api/v1/orders/track";
     public final String CANCEL_ORDER = "/api/v1/orders/cancel";
+    public final String SEARCH_METRO_STATIONS = "/api/v1/stations/search";
+
 }
